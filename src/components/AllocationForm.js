@@ -2,35 +2,50 @@ import React, { useContext, useState } from 'react';
 import { AppContext } from '../context/AppContext';
 
 const AllocationForm = (props) => {
-    const { dispatch,remaining  } = useContext(AppContext);
+    const { dispatch, remaining } = useContext(AppContext);
 
-    const [name, setName] = useState('');
+    const [name, SetName] = useState('');
     const [cost, setCost] = useState('');
-    const [action, setAction] = useState('');
+    const [setAction] = useState('');
 
-    const submitEvent = () => {
+    const handleAddExpense = () => {
+        const enteredCost = parseInt(cost);
 
-            if(cost > remaining) {
-                alert("The value cannot exceed remaining funds  £"+remaining);
-                setCost("");
-                return;
-            }
+        if (enteredCost > remaining) {
+            alert("The value cannot exceed remaining funds  £" + remaining);
+            setCost("");
+            return;
+        }
 
         const expense = {
             name: name,
-            cost: parseInt(cost),
+            cost: enteredCost,
         };
-        if(action === "Reduce") {
-            dispatch({
-                type: 'RED_EXPENSE',
-                payload: expense,
-            });
-        } else {
-                dispatch({
-                    type: 'ADD_EXPENSE',
-                    payload: expense,
-                });
-            }
+
+        dispatch({
+            type: 'ADD_EXPENSE',
+            payload: expense,
+        });
+    };
+
+    const handleReduceExpense = () => {
+        const enteredCost = parseInt(cost);
+
+        if (enteredCost > remaining) {
+            alert("You cannot reduce the budget lower than spending");
+            setCost("");
+            return;
+        }
+
+        const expense = {
+            name: name,
+            cost: enteredCost,
+        };
+
+        dispatch({
+            type: 'RED_EXPENSE',
+            payload: expense,
+        });
     };
 
     return (
@@ -41,7 +56,7 @@ const AllocationForm = (props) => {
                     <div className="input-group-prepend">
                 <label className="input-group-text" htmlFor="inputGroupSelect01">Department</label>
                   </div>
-                  <select className="custom-select" id="inputGroupSelect01" onChange={(event) => setName(event.target.value)}>
+                  <select className="custom-select" id="inputGroupSelect01" onChange={(event) => SetName(event.target.value)}>
                         <option defaultValue>Choose...</option>
                         <option value="Marketing" name="marketing"> Marketing</option>
                 <option value="Sales" name="sales">Sales</option>
@@ -68,7 +83,7 @@ const AllocationForm = (props) => {
                         onChange={(event) => setCost(event.target.value)}>
                         </input>
 
-                    <button className="btn btn-primary" onClick={submitEvent} style={{ marginLeft: '2rem' }}>
+                    <button className="btn btn-primary" onClick={handleAddExpense, handleReduceExpense} style={{ marginLeft: '2rem' }}>
                         Save
                     </button>
                 </div>
